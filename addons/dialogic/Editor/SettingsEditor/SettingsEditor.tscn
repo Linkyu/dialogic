@@ -326,6 +326,35 @@ margin_bottom = 24.0
 hint_tooltip = "If enabled, inputs for text events will be treated as keys for tr()"
 pressed = true
 
+[node name="HBoxContainer8" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2"]
+margin_top = 302.0
+margin_right = 356.0
+margin_bottom = 326.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TLabel" parent="VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer8" instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 5.0
+margin_right = 187.0
+margin_bottom = 19.0
+text = "Preview translations in editor"
+text_key = "Preview translations in editor"
+
+[node name="PreviewTranslations" type="CheckBox" parent="VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer8"]
+margin_left = 191.0
+margin_right = 215.0
+margin_bottom = 24.0
+pressed = true
+
+[node name="TranslationFileButton" type="Button" parent="VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer8"]
+margin_left = 219.0
+margin_right = 300.0
+margin_bottom = 24.0
+text = "res://tr.csv"
+
 [node name="VBoxContainer3" type="VBoxContainer" parent="VBoxContainer/HBoxContainer3/VBoxContainer"]
 margin_top = 432.0
 margin_right = 356.0
@@ -536,3 +565,6 @@ margin_left = 141.0
 margin_right = 195.0
 margin_bottom = 20.0
 text = "Cancel"
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer8/PreviewTranslations" to="." method="_on_PreviewTranslations_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer8/TranslationFileButton" to="." method="_on_TranslationFileButton_pressed"]

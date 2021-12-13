@@ -18,6 +18,8 @@ onready var nodes = {
 	'text_event_audio_enable': $VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer7/EnableVoices,
 	'text_event_audio_default_bus' : $VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/TextAudioDefaultBus/AudioBus,
 	'translations': $VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer6/Translations,
+	'translations_preview': $VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer8/PreviewTranslations,
+	'translations_preview_file': $VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer2/HBoxContainer8/TranslationFileButton,
 	
 	# Save
 	'autosave': $VBoxContainer/HBoxContainer3/VBoxContainer/VBoxContainer3/HBoxContainer/Autosave,
@@ -46,6 +48,8 @@ var INPUT_KEYS := [
 
 var DIALOG_KEYS := [
 	'translations',
+	'translations_preview',
+	'translations_preview_file',
 	'new_lines', 
 	'remove_empty_messages',
 	'auto_color_names',
@@ -103,6 +107,7 @@ func update_data():
 	load_values(settings, "saving", SAVING_KEYS)
 	load_values(settings, "input", INPUT_KEYS)
 	select_bus(settings.get_value("dialog", 'text_event_audio_default_bus', "Master"))
+	nodes["translations_preview_file"].disabled = not nodes["translations_preview"].pressed
 
 func load_values(settings: ConfigFile, section: String, key: Array):
 	for k in key:
@@ -110,8 +115,8 @@ func load_values(settings: ConfigFile, section: String, key: Array):
 			if nodes[k] is LineEdit:
 				nodes[k].text = settings.get_value(section, k)
 			else:
-				if k == 'default_action_key':
-					nodes['default_action_key'].text = settings.get_value(section, k)
+				if k in ['default_action_key', 'translations_preview_file']:
+					nodes[k].text = settings.get_value(section, k)
 				else:
 					nodes[k].pressed = settings.get_value(section, k, false)
 
@@ -204,6 +209,22 @@ func select_bus(text):
 func _on_text_audio_default_bus_item_selected(index):
 	var text = nodes['text_event_audio_default_bus'].get_item_text(index)
 	set_value('dialog', 'text_event_audio_default_bus', text)
+
+func _on_PreviewTranslations_pressed() -> void:
+	nodes["translations_preview_file"].disabled = not nodes["translations_preview"].pressed
+
+
+func _on_TranslationFileButton_pressed() -> void:
+	editor_reference.godot_dialog("*.csv")
+	editor_reference.godot_dialog_connect(self, "_on_translation_file_selected")
+
+
+func _on_translation_file_selected(path, target) -> void:
+	nodes["translations_preview_file"].text = path
+	
+	set_value('dialog', 'translations_preview_file', path)
+	
+	DialogicResources.serialize_translations()
 
 
 ################################################################################

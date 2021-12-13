@@ -6,6 +6,7 @@ var text_height = 21
 
 ## node references
 onready var text_editor = $TextEdit
+onready var preview = $Preview
 
 
 # used to connect the signals
@@ -46,6 +47,11 @@ func load_data(data:Dictionary):
 	
 	# resize the text_editor to the correct size 
 	text_editor.rect_min_size.y = text_height * (2 + text_editor.text.count('\n'))
+	
+	# Show the preview field if the option is enabled
+	var config = DialogicResources.get_settings_config()
+	preview.visible = config.get_value('dialog', 'translations_preview')
+	update_preview(text_editor.text)
 
 # has to return the wanted preview, only useful for body parts
 func get_preview():
@@ -66,6 +72,9 @@ func get_preview():
 	
 	return preview
 
+func update_preview(text:String):
+	preview.text = DialogicResources.translate(text)
+
 func _on_TextEditor_text_changed():
 	# in case this is a text event
 	if event_data['event_id'] == 'dialogic_001':
@@ -77,6 +86,11 @@ func _on_TextEditor_text_changed():
 	else:
 		event_data['text'] = text_editor.text
 	text_editor.rect_min_size.y = text_height * (2 + text_editor.text.count('\n'))
+	
+	# Update the preview field if the option is enabled
+	var config = DialogicResources.get_settings_config()
+	if config.get_value('dialog', 'translations_preview'):
+		update_preview(text_editor.text)
 	
 	# informs the parent about the changes!
 	data_changed()
